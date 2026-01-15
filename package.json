@@ -1,6 +1,11 @@
 {
   "name": "illima",
   "version": "0.0.0",
+  "scripts": {
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage"
+  },
   "workspaces": [
     "packages/*"
   ],
