@@ -1,2 +1,2 @@
-export * from "@schema/AuthorSchema";
-export * from "@schema/DocumentSchema";
+export * from "./src/schema/AuthorSchema";
+export * from "./src/schema/DocumentSchema";
