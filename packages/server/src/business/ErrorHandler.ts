@@ -23,7 +23,7 @@ namespace ErrorHandler {
       return error;
     }
 
-    return new UserDisplayableException("An unexpected error ocurred.");
+    return new UserDisplayableException("An unexpected error ocurred.", error);
   }
 
   export function getErrorResponse(error: unknown) {

@@ -10,6 +10,18 @@ export namespace AuthorDAO {
     });
   }
 
+  export async function findOne(id: string | number) {
+    return ErrorHandler.useAwait(async () => {
+      const result = await mySQL`SELECT * FROM Author WHERE id_author = ${id}`;
+
+      if (result.length === 0) {
+        return undefined;
+      }
+
+      return AuthorSchema.getValidAuthor(result[0]);
+    });
+  }
+
   export async function findOneByDisplayName(displayName: string) {
     return ErrorHandler.useAwait(async () => {
       const result = await mySQL`SELECT * FROM Author WHERE display_name = ${displayName}`;

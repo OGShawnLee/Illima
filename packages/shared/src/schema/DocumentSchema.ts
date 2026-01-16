@@ -10,22 +10,13 @@ export namespace DocumentSchema {
     id_author: getForeignKeySchema("Author ID"),
     title: v.pipe(
       v.string("Document Title must be a string"),
-      v.minLength(
-        MIN_TITLE_LENGTH,
-        "Document Title must be at least 8 characters long"
-      ),
-      v.maxLength(
-        MAX_TITLE_LENGTH,
-        "Document Title must be at most 128 characters long"
-      ),
+      v.minLength(MIN_TITLE_LENGTH, "Document Title must be at least 8 characters long"),
+      v.maxLength(MAX_TITLE_LENGTH, "Document Title must be at most 128 characters long"),
       v.trim()
     ),
     content: v.pipe(
       v.string("Document Content must be a string"),
-      v.maxLength(
-        MAX_CONTENT_LENGTH,
-        "Document Content must be at most 65,525 characters long"
-      ),
+      v.maxLength(MAX_CONTENT_LENGTH, "Document Content must be at most 65,525 characters long"),
       v.trim()
     ),
   });
@@ -35,9 +26,7 @@ export namespace DocumentSchema {
     created_at: v.date(),
   });
 
-  export type InsertDocumentShape = v.InferOutput<
-    typeof INSERT_DOCUMENT_SCHEMA
-  >;
+  export type InsertDocumentShape = v.InferOutput<typeof INSERT_DOCUMENT_SCHEMA>;
   export type DocumentShape = v.InferOutput<typeof DOCUMENT_SCHEMA>;
 
   export function getValidDocument(data: unknown) {
