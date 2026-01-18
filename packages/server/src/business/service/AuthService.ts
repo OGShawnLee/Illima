@@ -57,13 +57,29 @@ export namespace AuthService {
     });
   }
 
-  async function createJWTToken(
-    author: Pick<AuthorSchema.AuthorShape, "id_author" | "display_name">,
-  ) {
+  export function handleSignIn(data: unknown) {
+    return ErrorHandler.useAwait(async () => {
+      const credentials = AccountSchema.getValidSignInShape(data);
+      const account = await AccountDAO.findOneByDisplayName(credentials.display_name);
+
+      if (account.error) throw account.error;
+
+      if (account.data && (await isCorrectPassword(credentials.password, account.data.password))) {
+        return createJWTToken(account.data);
+      }
+
+      throw new BusinessRuleException("Cannot sign in because of invalid credentials.");
+    });
+  }
+
+  function isCorrectPassword(password: string, hash: string) {
+    return Bun.password.verify(password, hash, "bcrypt");
+  }
+
+  function createJWTToken(author: Pick<AuthorSchema.AuthorShape, "id_author">) {
     return sign(
       {
         id_author: author.id_author,
-        display_name: author.display_name,
         exp: Utility.calculateFutureTimestamp(15, "minutes"),
       },
       process.env.ACCESS_TOKEN!,

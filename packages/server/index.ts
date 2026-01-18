@@ -6,8 +6,8 @@ import { Hono } from "hono";
 
 const app = new Hono();
 
-app.post("auth/sign-in", async (context) => {});
-app.post("auth/sign-up", Utility.getPostRequestHandler(AuthControler.handleSignUp));
+app.post("/auth/sign-in", Utility.getPostRequestHandler(AuthControler.handleSignIn));
+app.post("/auth/sign-up", Utility.getPostRequestHandler(AuthControler.handleSignUp));
 
 app.get("/author", AuthorController.getAll);
 app.get("/author/:displayName", async (context) => {

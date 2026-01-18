@@ -10,7 +10,9 @@ export namespace AccountDAO {
   export async function findOneByDisplayName(displayName: string) {
     return ErrorHandler.useAwait(async () => {
       const result = await mySQL`
-        SELECT * FROM Account A JOIN Author Auth ON A.id_author = Auth.id_author WHERE Auth.display_name = ${displayName}
+        SELECT * FROM Account WHERE id_author = (
+          SELECT id_author FROM Author WHERE display_name = ${displayName} LIMIT 1
+        )
       `;
 
       if (result.length == 0) {

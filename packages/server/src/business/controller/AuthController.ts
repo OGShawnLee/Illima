@@ -13,4 +13,16 @@ export namespace AuthControler {
       headers: { "Content-Type": "application/json" },
     });
   }
+
+  export async function handleSignIn(data: unknown) {
+    const { data: token, error } = await AuthService.handleSignIn(data);
+
+    if (error) {
+      return ErrorHandler.getErrorResponse(error);
+    }
+
+    return new Response(JSON.stringify(token), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
