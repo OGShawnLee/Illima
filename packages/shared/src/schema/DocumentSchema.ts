@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { getForeignKeySchema } from "@schema/Common";
+import { getForeignKeySchema } from "./Common";
 
 export namespace DocumentSchema {
   export const MIN_TITLE_LENGTH = 8;
@@ -12,12 +12,12 @@ export namespace DocumentSchema {
       v.string("Document Title must be a string"),
       v.minLength(MIN_TITLE_LENGTH, "Document Title must be at least 8 characters long"),
       v.maxLength(MAX_TITLE_LENGTH, "Document Title must be at most 128 characters long"),
-      v.trim()
+      v.trim(),
     ),
     content: v.pipe(
       v.string("Document Content must be a string"),
       v.maxLength(MAX_CONTENT_LENGTH, "Document Content must be at most 65,525 characters long"),
-      v.trim()
+      v.trim(),
     ),
   });
   const DOCUMENT_SCHEMA = v.object({

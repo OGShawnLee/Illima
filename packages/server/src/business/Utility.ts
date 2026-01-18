@@ -4,8 +4,34 @@ import UserDisplayableException from "@business/UserDisplayableException";
 import ErrorHandler from "@business/ErrorHandler";
 
 namespace Utility {
+  /**
+   * Calculates a future Unix timestamp (in seconds) for JWT claims or expiration checks.
+   * @param {number} amount - The quantity of time to add.
+   * @param {'minutes' | 'hours' | 'days'} unit - The unit of time.
+   * @param {number} [currentTimeInMS = Date.now()] - Optional millisecond timestamp to use as the base (useful for testing).
+   * @returns {number} The future time in Unix seconds (seconds since Epoch).
+   * @example
+   * const exp = calculateFutureTimestamp(15, 'minutes'); // 15 mins from now
+   */
+  export function calculateFutureTimestamp(
+    amount: number,
+    unit: "minutes" | "hours" | "days",
+    currentTimeInMS: number = Date.now(),
+  ): number {
+    const secondsPerUnit = {
+      minutes: 60,
+      hours: 3600,
+      days: 86400,
+    };
+
+    const currentUnixSeconds = Math.floor(currentTimeInMS / 1000);
+    const additionalSeconds = amount * secondsPerUnit[unit];
+
+    return currentUnixSeconds + additionalSeconds;
+  }
+
   export async function getDataFromPostRequest(
-    request: HonoRequest
+    request: HonoRequest,
   ): Promise<Result<unknown, UserDisplayableException>> {
     const header = request.header("Content-Type");
 
@@ -14,7 +40,7 @@ namespace Utility {
         failed: true,
         data: null,
         error: new UserDisplayableException(
-          "Cannot continue with request. Expected 'Content-Type' (application/json or multipart/form-data) header."
+          "Cannot continue with request. Expected 'Content-Type' (application/json or multipart/form-data) header.",
         ),
       };
     }
@@ -30,7 +56,7 @@ namespace Utility {
       failed: true,
       data: null,
       error: new UserDisplayableException(
-        "Cannot continue with request. Expected form-data or json."
+        "Cannot continue with request. Expected form-data or json.",
       ),
     };
   }

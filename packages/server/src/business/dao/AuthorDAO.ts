@@ -4,10 +4,8 @@ import mySQL from "@db";
 import { AuthorSchema } from "shared";
 
 export namespace AuthorDAO {
-  export async function createOne(data: unknown) {
-    return ErrorHandler.useAwait(async () => {
-      await mySQL`INSERT INTO Author ${mySQL(AuthorSchema.getValidInsertAuthor(data))}`;
-    });
+  export async function createOne(transaction: Bun.TransactionSQL, data: unknown) {
+    return transaction`INSERT INTO Author ${mySQL(AuthorSchema.getValidInsertAuthor(data))}`.execute();
   }
 
   export async function findOne(id: string | number) {
@@ -41,15 +39,16 @@ export namespace AuthorDAO {
     });
   }
 
-  export async function getOneByDisplayName(displayName: string) {
+  export async function getOneByDisplayName(displayName: string, transaction?: Bun.TransactionSQL) {
     return ErrorHandler.useAwait(async () => {
-      const { data, error } = await findOneByDisplayName(displayName);
+      const client = transaction ?? mySQL;
+      const result = await client`SELECT * FROM Author WHERE display_name = ${displayName}`;
 
-      if (data) return data;
+      if (result.length === 0) {
+        throw new InvalidRequestException("Cannot get Author because it doesn't exist.");
+      }
 
-      if (error) throw error;
-
-      throw new InvalidRequestException("Cannot get Author because it doesn't exist.");
+      return AuthorSchema.getValidAuthor(result[0]);
     });
   }
 

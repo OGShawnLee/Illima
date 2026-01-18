@@ -1,18 +1,7 @@
 import ErrorHandler from "@business/ErrorHandler";
 import { AuthorDAO } from "@business/dao/AuthorDAO";
-import { AuthorService } from "@business/service/AuthorService";
 
 export namespace AuthorController {
-  export async function createOne(data: unknown) {
-    const { error } = await AuthorService.createOne(data);
-
-    if (error) {
-      return ErrorHandler.getErrorResponse(error);
-    }
-
-    return new Response(null, { status: 201 });
-  }
-
   export async function getAll() {
     const { data: authorList, error } = await AuthorDAO.getAll();
 
