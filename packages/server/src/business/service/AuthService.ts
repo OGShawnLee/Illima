@@ -36,7 +36,7 @@ export namespace AuthService {
         );
       }
 
-      const author = await mySQL.begin(async (transaction) => {
+      return mySQL.begin(async (transaction) => {
         await AuthorDAO.createOne(transaction, credentials);
         const author = await AuthorDAO.getOneByDisplayName(credentials.display_name, transaction);
 
@@ -49,11 +49,7 @@ export namespace AuthService {
         };
 
         await AccountDAO.createOne(transaction, account);
-
-        return author.data;
       });
-
-      return createJWTToken(author);
     });
   }
 
@@ -76,10 +72,10 @@ export namespace AuthService {
     return Bun.password.verify(password, hash, "bcrypt");
   }
 
-  function createJWTToken(author: Pick<AuthorSchema.AuthorShape, "id_author">) {
+  function createJWTToken(context: Pick<AccountSchema.AccountShape, "id_author">) {
     return sign(
       {
-        id_author: author.id_author,
+        id_author: context.id_author,
         exp: Utility.calculateFutureTimestamp(15, "minutes"),
       },
       process.env.ACCESS_TOKEN!,

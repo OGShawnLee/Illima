@@ -1,11 +1,15 @@
+import type { JwtVariables as JWTVariables } from "hono/jwt";
 import Utility from "@business/Utility";
 import { AuthControler } from "@controller/AuthController";
 import { AuthorController } from "@controller/AuthorController";
 import { DocumentController } from "@controller/DocumentController";
 import { Hono } from "hono";
 import { jwt as JWT } from "hono/jwt";
+import { ProfileController } from "@controller/ProfileController";
 
-const app = new Hono();
+type Variables = JWTVariables<{ id_author: number }>;
+
+const app = new Hono<{ Variables: Variables }>();
 
 app.use(
   "/api/*",
@@ -18,6 +22,9 @@ app.use(
 app.post("/auth/sign-in", Utility.getPostRequestHandler(AuthControler.handleSignIn));
 app.post("/auth/sign-up", Utility.getPostRequestHandler(AuthControler.handleSignUp));
 
+app.get("/api/profile", async (context) => {
+  return ProfileController.getOne(context.get("jwtPayload").id_author);
+});
 app.get("/api/author", AuthorController.getAll);
 app.get("/api/author/:displayName", async (context) => {
   return AuthorController.getOneByDisplayName(context.req.param("displayName"));

@@ -24,7 +24,7 @@ export namespace AccountSchema {
     ),
   );
 
-  const ACCOUNT_SCHEMA = v.object({
+  export const ACCOUNT_SCHEMA = v.object({
     id_account: v.number(),
     id_author: v.number(),
     email: v.pipe(
@@ -53,6 +53,7 @@ export namespace AccountSchema {
     password: SIMPLE_PASSWORD_SCHEMA,
   });
 
+  export type AccountShape = v.InferOutput<typeof ACCOUNT_SCHEMA>;
   export type SignUpShape = v.InferOutput<typeof SIGN_UP_SCHEMA>;
   export type InsertAccountShape = v.InferOutput<typeof INSERT_ACCOUNT_SCHEMA>;
 

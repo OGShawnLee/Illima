@@ -1,3 +1,4 @@
 export * from "./src/schema/AccountSchema";
 export * from "./src/schema/AuthorSchema";
 export * from "./src/schema/DocumentSchema";
+export * from "./src/schema/ProfileSchema";

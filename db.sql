@@ -24,6 +24,18 @@ CREATE TABLE Document (
   FOREIGN KEY (id_author) REFERENCES Author (id_author) ON DELETE CASCADE
 );
 
+CREATE VIEW Profile AS
+SELECT
+  A.id_author,
+  ACC.id_account,
+  A.name,
+  A.last_name,
+  A.display_name,
+  ACC.email,
+  ACC.created_at
+FROM Author A
+JOIN Account ACC ON ACC.id_author = A.id_author;
+
 CREATE VIEW CompleteDocumentView AS
 SELECT
   Doc.id_document,

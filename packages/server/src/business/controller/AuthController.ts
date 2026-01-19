@@ -9,9 +9,7 @@ export namespace AuthControler {
       return ErrorHandler.getErrorResponse(error);
     }
 
-    return new Response(JSON.stringify(token), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(null, { status: 201 });
   }
 
   export async function handleSignIn(data: unknown) {
