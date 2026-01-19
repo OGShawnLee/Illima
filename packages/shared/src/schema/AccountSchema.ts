@@ -6,7 +6,7 @@ export namespace AccountSchema {
   export const MAX_PASSWORD_LENGTH = 64;
   export const MIN_DISPLAY_NAME_LENGTH = AuthorSchema.MIN_DISPLAY_NAME_LENGTH;
   export const MAX_DISPLAY_NAME_LENGTH = AuthorSchema.MAX_DISPLAY_NAME_LENGTH;
-  export const MIN_EMAIL_LENGTH = 3;
+  export const MIN_EMAIL_LENGTH = 6;
   export const MAX_EMAIL_LENGTH = 128;
   export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,64}$/;
   export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -24,16 +24,23 @@ export namespace AccountSchema {
     ),
   );
 
+  const ACCOUNT_SCHEMA = v.object({
+    id_account: v.number(),
+    id_author: v.number(),
+    email: v.pipe(
+      v.string("Email must be a string"),
+      v.minLength(MIN_EMAIL_LENGTH, "Email must be at least 6 characters long."),
+      v.maxLength(MAX_EMAIL_LENGTH, "Email must be at most 128 characters long."),
+      v.regex(EMAIL_REGEX, "Email have the correct format."),
+    ),
+    password: SIMPLE_PASSWORD_SCHEMA,
+    created_at: v.date(),
+  });
   const SIGN_UP_SCHEMA = v.object({
     name: AuthorSchema.AUTHOR_SCHEMA.entries.name,
     last_name: AuthorSchema.AUTHOR_SCHEMA.entries.last_name,
     display_name: AuthorSchema.AUTHOR_SCHEMA.entries.display_name,
-    email: v.pipe(
-      v.string("Email must be a string"),
-      v.minLength(MIN_EMAIL_LENGTH, "Email must be at least 3 characters long."),
-      v.maxLength(MAX_EMAIL_LENGTH, "Email must be at most 128 characters long."),
-      v.regex(EMAIL_REGEX, "Email have the correct format."),
-    ),
+    email: ACCOUNT_SCHEMA.entries.email,
     password: STRONG_PASSWORD_SCHEMA,
   });
   const SIGN_IN_SCHEMA = v.object({
@@ -44,13 +51,6 @@ export namespace AccountSchema {
     id_author: v.number(),
     email: SIGN_UP_SCHEMA.entries.email,
     password: SIMPLE_PASSWORD_SCHEMA,
-  });
-  const ACCOUNT_SCHEMA = v.object({
-    id_account: v.number(),
-    id_author: v.number(),
-    email: INSERT_ACCOUNT_SCHEMA.entries.email,
-    password: SIMPLE_PASSWORD_SCHEMA,
-    created_at: v.date(),
   });
 
   export type SignUpShape = v.InferOutput<typeof SIGN_UP_SCHEMA>;
