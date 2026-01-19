@@ -1,7 +1,7 @@
 import type { Context, HonoRequest } from "hono";
 import type { Result } from "@business/ErrorHandler";
-import UserDisplayableException from "@business/UserDisplayableException";
 import ErrorHandler from "@business/ErrorHandler";
+import { UserDisplayableException } from "@business/Exception";
 
 namespace Utility {
   /**

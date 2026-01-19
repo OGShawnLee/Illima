@@ -1,7 +1,7 @@
 import ErrorHandler from "@business/ErrorHandler";
-import InvalidRequestException from "@business/InvalidRequestException";
 import mySQL from "@db";
 import { DocumentSchema } from "shared";
+import { InvalidRequestException } from "@business/Exception";
 
 export namespace DocumentDAO {
   export async function createOne(data: unknown) {

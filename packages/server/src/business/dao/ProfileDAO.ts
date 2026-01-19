@@ -1,7 +1,7 @@
 import ErrorHandler from "@business/ErrorHandler";
-import InvalidRequestException from "@business/InvalidRequestException";
 import mySQL from "@db";
 import { ProfileSchema } from "shared";
+import { InvalidRequestException } from "@business/Exception";
 
 export namespace ProfileDAO {
   export function getOne(idAuthor: number) {

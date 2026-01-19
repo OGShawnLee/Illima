@@ -1,10 +1,10 @@
-import BusinessRuleException from "@business/BusinessRuleException";
 import ErrorHandler from "@business/ErrorHandler";
 import Utility from "@business/Utility";
 import mySQL from "@db";
 import { AccountDAO } from "@business/dao/AccountDAO";
 import { AuthorDAO } from "@business/dao/AuthorDAO";
-import { AccountSchema, AuthorSchema } from "shared";
+import { AccountSchema } from "shared";
+import { BusinessRuleException } from "@business/Exception";
 import { sign } from "hono/jwt";
 
 export namespace AuthService {
@@ -75,7 +75,7 @@ export namespace AuthService {
   function createJWTToken(context: Pick<AccountSchema.AccountShape, "id_author">) {
     return sign(
       {
-        id_author: context.id_author,
+        idAuthor: context.id_author,
         exp: Utility.calculateFutureTimestamp(15, "minutes"),
       },
       process.env.ACCESS_TOKEN!,

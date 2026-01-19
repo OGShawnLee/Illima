@@ -1,6 +1,6 @@
-import BusinessRuleException from "@business/BusinessRuleException";
 import ErrorHandler from "@business/ErrorHandler";
 import { AuthorDAO } from "@business/dao/AuthorDAO";
+import { BusinessRuleException } from "@business/Exception";
 import { DocumentDAO } from "@business/dao/DocumentDAO";
 import { DocumentSchema } from "shared";
 
@@ -19,7 +19,7 @@ export namespace DocumentService {
       }
 
       throw new BusinessRuleException(
-        "Cannot create Document because the provided Author doesn't exists."
+        "Cannot create Document because the provided Author doesn't exists.",
       );
     });
   }

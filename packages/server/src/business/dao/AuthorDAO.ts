@@ -1,7 +1,7 @@
 import ErrorHandler from "@business/ErrorHandler";
-import InvalidRequestException from "@business/InvalidRequestException";
 import mySQL from "@db";
 import { AuthorSchema } from "shared";
+import { InvalidRequestException } from "@business/Exception";
 
 export namespace AuthorDAO {
   export async function createOne(transaction: Bun.TransactionSQL, data: unknown) {

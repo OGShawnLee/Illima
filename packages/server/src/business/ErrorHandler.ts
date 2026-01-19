@@ -1,6 +1,8 @@
-import BusinessRuleException from "@business/BusinessRuleException";
-import InvalidRequestException from "@business/InvalidRequestException";
-import UserDisplayableException from "@business/UserDisplayableException";
+import {
+  BusinessRuleException,
+  InvalidRequestException,
+  UserDisplayableException,
+} from "@business/Exception";
 
 export type Result<Data, Error> =
   | { data: null; failed: true; error: Error }
