@@ -3,7 +3,7 @@ import Utility from "@business/Utility";
 import mySQL from "@db";
 import { AccountDAO } from "@business/dao/AccountDAO";
 import { AuthorDAO } from "@business/dao/AuthorDAO";
-import { AccountSchema } from "shared";
+import { AccountSchema, AuthSchema } from "shared";
 import { BusinessRuleException } from "@business/Exception";
 import { sign } from "hono/jwt";
 
@@ -74,10 +74,10 @@ export namespace AuthService {
 
   function createJWTToken(context: Pick<AccountSchema.AccountShape, "id_author">) {
     return sign(
-      {
+      AuthSchema.getValidJWTPayloadShape({
         idAuthor: context.id_author,
         exp: Utility.calculateFutureTimestamp(15, "minutes"),
-      },
+      }),
       process.env.ACCESS_TOKEN!,
       "HS256",
     );

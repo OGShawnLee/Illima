@@ -6,8 +6,9 @@ import { DocumentController } from "@controller/DocumentController";
 import { Hono } from "hono";
 import { jwt as JWT } from "hono/jwt";
 import { ProfileController } from "@controller/ProfileController";
+import { AuthSchema } from "shared";
 
-type Variables = JWTVariables<{ idAuthor: number }>;
+type Variables = JWTVariables<AuthSchema.JWTPayloadShape>;
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -23,7 +24,9 @@ app.post("/auth/sign-in", Utility.getPostRequestHandler(AuthControler.handleSign
 app.post("/auth/sign-up", Utility.getPostRequestHandler(AuthControler.handleSignUp));
 
 app.get("/api/profile", async (context) => {
-  return ProfileController.getOne(context.get("jwtPayload").idAuthor);
+  return ProfileController.getOne(
+    AuthSchema.getValidJWTPayloadShape(context.get("jwtPayload")).idAuthor,
+  );
 });
 app.get("/api/author", AuthorController.getAll);
 app.get("/api/author/:displayName", async (context) => {
