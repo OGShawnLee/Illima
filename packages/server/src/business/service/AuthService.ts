@@ -83,6 +83,7 @@ export namespace AuthService {
         exp: Utility.calculateFutureTimestamp(15, "minutes"),
       },
       process.env.ACCESS_TOKEN!,
+      "HS256",
     );
   }
 }

@@ -18,16 +18,16 @@ namespace Utility {
     unit: "minutes" | "hours" | "days",
     currentTimeInMS: number = Date.now(),
   ): number {
-    const secondsPerUnit = {
+    const SECONDS_PER_UNIT = {
       minutes: 60,
       hours: 3600,
       days: 86400,
     };
 
     const currentUnixSeconds = Math.floor(currentTimeInMS / 1000);
-    const additionalSeconds = amount * secondsPerUnit[unit];
+    const additionalSeconds = amount * SECONDS_PER_UNIT[unit];
 
-    return currentUnixSeconds + additionalSeconds;
+    return (currentUnixSeconds + additionalSeconds) * 1000;
   }
 
   export async function getDataFromPostRequest(

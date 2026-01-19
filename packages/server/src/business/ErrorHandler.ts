@@ -16,6 +16,7 @@ namespace ErrorHandler {
   }
 
   function getUserDisplayableException(error: unknown) {
+    console.log(error);
     if (
       error instanceof UserDisplayableException ||
       (error instanceof Error && error.name == "ValiError")
