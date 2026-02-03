@@ -33,7 +33,7 @@ namespace Utility {
   export async function getDataFromPostRequest(
     request: HonoRequest,
   ): Promise<Result<unknown, UserDisplayableException>> {
-    const header = request.header("Content-Type");
+    const header = request.header("Content-Type") ?? request.header("content-type");
 
     if (header == undefined) {
       return {
