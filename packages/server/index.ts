@@ -7,11 +7,13 @@ import { Hono } from "hono";
 import { jwt as JWT } from "hono/jwt";
 import { ProfileController } from "@controller/ProfileController";
 import { AuthSchema } from "shared";
+import { cors } from "hono/cors";
 
 type Variables = JWTVariables<AuthSchema.JWTPayloadShape>;
 
 const app = new Hono<{ Variables: Variables }>();
 
+app.use("/*", cors());
 app.use(
   "/api/*",
   JWT({
