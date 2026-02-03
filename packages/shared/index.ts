@@ -1,3 +1,5 @@
+export * from "./src/Hook";
+export * from "./src/Predicate";
 export * from "./src/schema/AccountSchema";
 export * from "./src/schema/AuthorSchema";
 export * from "./src/schema/AuthSchema";

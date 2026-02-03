@@ -2,42 +2,64 @@
 import GUIAuthLayout from "@/component/GUIAuthLayout.vue";
 import GUIButton from "@/component/GUIButton.vue";
 import GUIInput from "@/component/GUIInput.vue";
-import GUILogo from "@/component/GUILogo.vue";
+import router from "@/router";
+import { AccountSchema, useAwait } from "shared";
 import { ref, reactive } from "vue";
 
 const isLoading = ref(false);
-const form = reactive({
+const form = reactive<AccountSchema.SignUpShape>({
   name: "",
-  displayName: "",
+  last_name: "",
+  display_name: "",
   email: "",
   password: "",
 });
 
-const handleSignUp = async () => {
+async function handleSignUp() {
   isLoading.value = true;
-  setTimeout(() => (isLoading.value = false), 2000);
-};
+
+  const { error } = await useAwait(async () => {
+    const response = await fetch("http://localhost:3000/auth/sign-up", {
+      method: "POST",
+      body: JSON.stringify(AccountSchema.getValidSignUpShape(form)),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok && response.status === 201) {
+      router.push("/auth/sign-in");
+    }
+  });
+
+  if (error) {
+    console.error(error);
+  }
+
+  isLoading.value = false;
+}
 </script>
 
 <template>
   <GUIAuthLayout label="Begin your collection of thoughts">
     <form @submit.prevent="handleSignUp" class="space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <GUIInput label="Name" id="name" placeholder="Illiam" v-model="form.name" required />
         <GUIInput
-          label="Full Name"
-          id="name"
-          placeholder="Illiam Lee"
-          v-model="form.name"
-          required
-        />
-        <GUIInput
-          label="Username"
-          id="display-name"
-          placeholder="illiamlee"
-          v-model="form.displayName"
+          label="Last Name"
+          id="last-name"
+          placeholder="Lee"
+          v-model="form.last_name"
           required
         />
       </div>
+      <GUIInput
+        label="Username"
+        id="display-name"
+        placeholder="illiamlee"
+        v-model="form.display_name"
+        required
+      />
       <GUIInput
         type="email"
         label="Email Address"

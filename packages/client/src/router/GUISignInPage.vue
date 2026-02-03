@@ -2,31 +2,53 @@
 import GUIAuthLayout from "@/component/GUIAuthLayout.vue";
 import GUIButton from "@/component/GUIButton.vue";
 import GUIInput from "@/component/GUIInput.vue";
-import GUILogo from "@/component/GUILogo.vue";
+import router from "@/router";
+import { AccountSchema, useAwait } from "shared";
 import { ref, reactive } from "vue";
+import { AUTH_TOKEN_NAME } from "@/env";
 
 const isLoading = ref(false);
 const form = reactive({
-  email: "",
+  display_name: "",
   password: "",
-  rememberMe: false,
 });
 
-const handleSignIn = async () => {
+async function handleSignIn() {
   isLoading.value = true;
-  setTimeout(() => (isLoading.value = false), 3000);
-};
+
+  const { error } = await useAwait(async () => {
+    const response = await fetch("http://localhost:3000/auth/sign-in", {
+      method: "POST",
+      body: JSON.stringify(AccountSchema.getValidSignInShape(form)),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const token = await response.text();
+
+    if (token) {
+      localStorage.setItem(AUTH_TOKEN_NAME, token);
+      router.push("/home");
+    }
+  });
+
+  if (error) {
+    console.error(error);
+  }
+
+  isLoading.value = false;
+}
 </script>
 
 <template>
   <GUIAuthLayout label="Where thoughts find their home">
     <form @submit.prevent="handleSignIn" class="space-y-7">
       <GUIInput
-        type="email"
-        label="Email Address"
-        id="email"
-        v-model="form.email"
-        placeholder="illiam@illima.io"
+        type="text"
+        label="Username"
+        id="display-name"
+        v-model="form.display_name"
+        placeholder="IlliamLee"
         required
       />
       <GUIInput type="password" label="Password" id="password" v-model="form.password" required />
