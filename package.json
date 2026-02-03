@@ -6,7 +6,9 @@
     "test:watch": "bun test --watch",
     "test:coverage": "bun test --coverage",
     "server": "cd packages/server && bun index.ts",
-    "server:watch": "cd packages/server && bun --watch index.ts"
+    "server:watch": "cd packages/server && bun --watch index.ts",
+    "client": "cd packages/client && bun dev",
+    "dev": "concurrently \"bun run server:watch\" \"bun run client\""
   },
   "workspaces": [
     "packages/*"
