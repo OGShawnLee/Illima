@@ -3,7 +3,12 @@ import UnoCSS from "unocss/vite";
 import VueDevTools from "vite-plugin-vue-devtools";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
-import { presetWind3, presetWebFonts, transformerVariantGroup } from "unocss";
+import {
+  presetWind3,
+  presetWebFonts,
+  transformerVariantGroup,
+  transformerDirectives,
+} from "unocss";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,7 +25,12 @@ export default defineConfig({
           },
         }),
       ],
-      transformers: [transformerVariantGroup()],
+      transformers: [
+        transformerDirectives({
+          applyVariable: "--uno",
+        }),
+        transformerVariantGroup(),
+      ],
     }),
   ],
   resolve: {

@@ -23,4 +23,23 @@ export namespace DocumentService {
       );
     });
   }
+
+  export function updateOne(data: unknown) {
+    return ErrorHandler.useAwait(async () => {
+      const document = DocumentSchema.getValidDocument(data);
+      const author = await AuthorDAO.findOne(document.id_author);
+
+      if (author.error) throw author.error;
+
+      if (author.data) {
+        return DocumentDAO.updateOne(document).then((res) => {
+          if (res.error) throw res.error;
+        });
+      }
+
+      throw new BusinessRuleException(
+        "Cannot update Document because the provided Author doesn't exists.",
+      );
+    });
+  }
 }

@@ -30,7 +30,7 @@
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <RouterLink
           to="/auth/sign-up"
-          class="w-full sm:w-auto px-10 py-4 bg-gray-900 text-white rounded-xl text-sm font-medium hover:shadow-xl transition-all hover:-translate-y-0.5"
+          class="w-full sm:w-auto px-10 py-4 bg-gray-900 text-white rounded-xl text-sm font-medium hover:shadow-xl transition-all hover:-trangray-y-0.5"
         >
           Start Writing for Free
         </RouterLink>

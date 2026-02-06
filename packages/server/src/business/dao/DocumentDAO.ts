@@ -22,9 +22,9 @@ export namespace DocumentDAO {
     });
   }
 
-  export async function getAll() {
+  export async function getAllByAuthor(id: number) {
     return ErrorHandler.useAwait(async () => {
-      const result = await mySQL`SELECT * FROM CompleteDocumentView`;
+      const result = await mySQL`SELECT * FROM CompleteDocumentView WHERE id_author = ${id}`;
       return result.map(DocumentSchema.getValidDocument) as DocumentSchema.DocumentShape[];
     });
   }
@@ -38,6 +38,13 @@ export namespace DocumentDAO {
       if (error) throw error;
 
       throw new InvalidRequestException("Cannot get Document because it doesn't exist.");
+    });
+  }
+
+  export async function updateOne(data: unknown) {
+    return ErrorHandler.useAwait(async () => {
+      const doc = DocumentSchema.getValidDocument(data);
+      await mySQL`UPDATE Document SET title = ${doc.title}, content = ${doc.content} WHERE id_document = ${doc.id_document}`;
     });
   }
 

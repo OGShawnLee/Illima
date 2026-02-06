@@ -13,8 +13,8 @@ export namespace DocumentController {
     return new Response(null, { status: 201 });
   }
 
-  export async function getAll() {
-    const { data: authorList, error } = await DocumentDAO.getAll();
+  export async function getAllByAuthor(id: number) {
+    const { data: authorList, error } = await DocumentDAO.getAllByAuthor(id);
 
     if (error) {
       return ErrorHandler.getErrorResponse(error);
@@ -37,16 +37,23 @@ export namespace DocumentController {
     });
   }
 
-  export async function deleteOne(id: string) {
-    const { data: author, error } = await DocumentDAO.deleteOne(id);
+  export async function updateOne(data: unknown) {
+    const { error } = await DocumentService.updateOne(data);
 
     if (error) {
       return ErrorHandler.getErrorResponse(error);
     }
 
-    return new Response(JSON.stringify(author), {
-      status: 204,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(null, { status: 201 });
+  }
+
+  export async function deleteOne(id: string) {
+    const { error } = await DocumentDAO.deleteOne(id);
+
+    if (error) {
+      return ErrorHandler.getErrorResponse(error);
+    }
+
+    return new Response(null, { status: 204 });
   }
 }

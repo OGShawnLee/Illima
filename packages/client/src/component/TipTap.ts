@@ -1,0 +1,17 @@
+export { default as Blockquote } from "@tiptap/extension-blockquote";
+export { default as Bold } from "@tiptap/extension-bold";
+export { default as BubbleMenuExtension } from "@tiptap/extension-bubble-menu";
+export { default as BulletList } from "@tiptap/extension-bullet-list";
+export { default as CharacterCount } from "@tiptap/extension-character-count";
+export { default as Document } from "@tiptap/extension-document";
+export { default as Heading } from "@tiptap/extension-heading";
+export { default as History } from "@tiptap/extension-history";
+export { default as Italic } from "@tiptap/extension-italic";
+export { default as ListItem } from "@tiptap/extension-list-item";
+export { default as OrderedList } from "@tiptap/extension-ordered-list";
+export { default as Paragraph } from "@tiptap/extension-paragraph";
+export { default as Placeholder } from "@tiptap/extension-placeholder";
+export { default as Strike } from "@tiptap/extension-strike";
+export { default as Text } from "@tiptap/extension-text";
+export { default as TextAlign } from "@tiptap/extension-text-align";
+export { default as Underline } from "@tiptap/extension-underline";

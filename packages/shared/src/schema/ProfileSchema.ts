@@ -1,6 +1,7 @@
 import * as v from "valibot";
 import AuthorSchema from "./AuthorSchema";
 import { AccountSchema } from "./AccountSchema";
+import { getDateOrStringSchema } from "./Common";
 
 export namespace ProfileSchema {
   const PROFILE_SCHEMA = v.object({
@@ -9,7 +10,7 @@ export namespace ProfileSchema {
     last_name: AuthorSchema.AUTHOR_SCHEMA.entries.last_name,
     display_name: AuthorSchema.AUTHOR_SCHEMA.entries.display_name,
     email: AccountSchema.ACCOUNT_SCHEMA.entries.email,
-    created_at: AccountSchema.ACCOUNT_SCHEMA.entries.created_at,
+    created_at: getDateOrStringSchema("Created At"),
   });
 
   export type ProfileShape = v.InferOutput<typeof PROFILE_SCHEMA>;

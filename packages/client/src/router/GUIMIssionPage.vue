@@ -76,7 +76,7 @@ import GUILogo from "@/component/GUILogo.vue";
         </div>
         <RouterLink
           to="/auth/sign-up"
-          class="inline-block px-12 py-4 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-black hover:-translate-y-1 transition-all shadow-sm"
+          class="inline-block px-12 py-4 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-black hover:-trangray-y-1 transition-all shadow-sm"
         >
           Create your Sanctuary
         </RouterLink>

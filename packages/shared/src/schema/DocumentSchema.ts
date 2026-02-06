@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { getForeignKeySchema } from "./Common";
+import { getDateOrStringSchema, getForeignKeySchema } from "./Common";
 
 export namespace DocumentSchema {
   export const MIN_TITLE_LENGTH = 8;
@@ -23,7 +23,7 @@ export namespace DocumentSchema {
   const DOCUMENT_SCHEMA = v.object({
     ...INSERT_DOCUMENT_SCHEMA.entries,
     id_document: v.number(),
-    created_at: v.date(),
+    created_at: getDateOrStringSchema("Created At"),
   });
 
   export type InsertDocumentShape = v.InferOutput<typeof INSERT_DOCUMENT_SCHEMA>;

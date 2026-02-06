@@ -38,11 +38,14 @@ app.delete("/api/author/:displayName", async (context) => {
   return AuthorController.deleteOneByDisplayName(context.req.param("displayName"));
 });
 
-app.get("/api/document", DocumentController.getAll);
+app.get("/api/document", async (context) => {
+  return DocumentController.getAllByAuthor(context.get("jwtPayload").idAuthor);
+});
 app.get("/api/document/:id", async (context) => {
   return DocumentController.getOne(context.req.param("id"));
 });
 app.post("/api/document", Utility.getPostRequestHandler(DocumentController.createOne));
+app.patch("/api/document/:id", Utility.getPostRequestHandler(DocumentController.updateOne));
 app.delete("/api/document/:id", async (context) => {
   return DocumentController.deleteOne(context.req.param("id"));
 });
