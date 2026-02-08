@@ -5,9 +5,9 @@ import router from "@/router";
 import { API_BASE_URL, AUTH_TOKEN_NAME } from "@/env";
 import { onMounted, ref, watch } from "vue";
 import { DocumentSchema, isNullish, ProfileSchema, useAwait } from "shared";
-import { Share, Trash2 } from "lucide-vue-next";
+import { Moon, Share, Sun, Trash2 } from "lucide-vue-next";
 import { useRoute } from "vue-router";
-import { useDebounceFn } from "@vueuse/core";
+import { useDark, useDebounceFn, useToggle } from "@vueuse/core";
 
 function handleFetchProfile(auth: string) {
   return useAwait(async () => {
@@ -36,6 +36,8 @@ const documentCollection = ref<DocumentSchema.DocumentShape[]>([]);
 const route = useRoute();
 const content = ref("");
 const titleRef = ref<HTMLHeadingElement>();
+const isDark = useDark();
+const handleToggleTheme = useToggle(isDark);
 
 watch(
   () => currentDocument.value,
@@ -220,47 +222,61 @@ function onTitleInput(e: Event) {
 </script>
 
 <template>
-  <div class="h-screen bg-[#FDFDFD] flex overflow-hidden">
+  <div
+    class="h-screen flex overflow-hidden transition-colors duration-300 bg-[#FDFDFD] text-gray-900 dark:bg-[#0A0A0A] dark:text-gray-100"
+  >
     <GUIHomeSidebar
       :document-collection="documentCollection"
       :profile="profile"
       @on-create-document="handleCreateDocument"
     />
-    <main class="flex-1 flex flex-col min-w-0 bg-white h-full overflow-hidden">
+
+    <main class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-white dark:bg-[#121212]">
       <header
-        class="h-16 border-b border-gray-50 flex items-center justify-between px-8 bg-white/80 backdrop-blur-md z-10 shrink-0"
+        class="h-16 border-b flex items-center justify-between px-8 backdrop-blur-md z-10 shrink-0 transition-colors border-gray-50 bg-white/80 dark:border-white/5 dark:bg-[#121212]/80"
       >
-        <div class="text-[10px] uppercase tracking-[0.3em] text-gray-300">
-          Studio / {{ currentDocument?.title }}
+        <div
+          class="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-300 dark:text-gray-500"
+        >
+          Studio /
+          <span class="text-gray-600 dark:text-gray-200">{{ currentDocument?.title }}</span>
         </div>
+
         <div class="flex items-center gap-2">
           <button
-            class="p-2 text-gray-400 hover:text-gray-900 transition-colors"
-            title="Share Document"
+            @click="handleToggleTheme()"
+            class="p-2 rounded-lg transition-colors text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
+          >
+            <Sun v-if="isDark" :size="18" />
+            <Moon v-else :size="18" />
+          </button>
+          <button
+            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <Share :size="18" />
           </button>
-          <button
-            class="p-2 text-gray-300 hover:text-red-500 transition-colors"
-            title="Delete Document"
-            @click="handleDeleteDocument"
-          >
+          <button class="p-2 text-gray-300 dark:text-gray-600 hover:text-red-500 transition-colors">
             <Trash2 :size="18" />
           </button>
         </div>
       </header>
-      <div class="flex-1 overflow-y-auto">
+
+      <div class="flex-1 overflow-y-auto custom-scrollbar">
         <article class="max-w-3xl mx-auto px-12 py-20" :key="currentDocument?.id_document">
           <h1
             ref="titleRef"
             contenteditable="true"
-            class="text-4xl tracking-tight text-gray-900 mb-12 outline-none focus:ring-0 empty:before:content-['Untitled'] empty:before:text-gray-300"
+            class="text-4xl tracking-tight mb-12 outline-none focus:ring-0 spellcheck-false text-gray-900 dark:text-white empty:before:text-gray-300 dark:empty:before:text-gray-700 empty:before:content-['Untitled']"
             @input="onTitleInput"
-            spellcheck="false"
           >
             {{ currentDocument?.title }}
           </h1>
-          <GUIEditor :content="content" @on-update="debouncedContentUpdate" />
+
+          <GUIEditor
+            :class="isDark ? 'prose-dark' : 'prose-light'"
+            :content="content"
+            @on-update="debouncedContentUpdate"
+          />
         </article>
       </div>
     </main>

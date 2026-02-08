@@ -22,9 +22,7 @@ async function handleSignUp() {
     const response = await fetch("http://localhost:3000/auth/sign-up", {
       method: "POST",
       body: JSON.stringify(AccountSchema.getValidSignUpShape(form)),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
 
     if (response.ok && response.status === 201) {
@@ -32,10 +30,7 @@ async function handleSignUp() {
     }
   });
 
-  if (error) {
-    console.error(error);
-  }
-
+  if (error) console.error(error);
   isLoading.value = false;
 }
 </script>
@@ -70,31 +65,37 @@ async function handleSignUp() {
       />
       <div>
         <GUIInput type="password" label="Password" id="password" v-model="form.password" required />
-        <p class="mt-2 text-[11px] text-gray-400 font-light ml-1">
-          Must be at least 8 characters long.
+        <p
+          class="mt-2 text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-600 font-bold ml-1"
+        >
+          At least 8 characters.
         </p>
       </div>
-      <p class="text-[12px] text-gray-400 text-center px-4 leading-relaxed">
+      <p
+        class="text-[11px] text-gray-400 dark:text-gray-500 text-center px-4 leading-relaxed font-medium transition-colors"
+      >
         By signing up, you agree to our
         <RouterLink
           to="/terms-of-service"
-          class="underline decoration-gray-200 hover:decoration-indigo-400 transition-colors text-gray-500"
+          class="underline decoration-gray-200 dark:decoration-gray-800 hover:text-black dark:hover:text-white transition-colors"
         >
           Terms of Service </RouterLink
         >.
       </p>
-      <GUIButton :loading="isLoading" loading-label="Creating Account" type="submit">
+      <GUIButton :loading="isLoading" loading-label="Creating Account..." type="submit">
         Join Illima
       </GUIButton>
     </form>
     <template #footer>
-      <p class="mt-8 text-center text-sm text-gray-400 font-light">
+      <p
+        class="mt-8 text-center text-xs uppercase tracking-[0.15em] text-gray-400 dark:text-gray-600 font-medium"
+      >
         Already have an account?
         <RouterLink
           to="/auth/sign-in"
-          class="font-medium text-gray-600 hover:text-black underline underline-offset-4 transition-all"
+          class="ml-1 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white underline underline-offset-4 decoration-gray-200 dark:decoration-gray-800 transition-all"
         >
-          Sign in here!
+          Sign in here
         </RouterLink>
       </p>
     </template>

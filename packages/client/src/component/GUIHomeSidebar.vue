@@ -23,14 +23,20 @@ function handleSignOut() {
 </script>
 
 <template>
-  <aside class="w-72 border-r border-gray-100 bg-[#FAFAFA] flex flex-col h-full shrink-0">
+  <aside
+    class="w-72 flex flex-col h-full shrink-0 transition-colors duration-300 bg-[#FAFAFA] border-r border-gray-100 dark:bg-[#0F0F0F] dark:border-white/5"
+  >
     <div class="p-8 overflow-y-auto flex-1 custom-scrollbar">
-      <GUILogo class="mb-10" />
+      <GUILogo class="mb-10 dark:invert-[0.9]" />
       <nav>
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Documents</h2>
+          <h2
+            class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 dark:text-gray-500"
+          >
+            Documents
+          </h2>
           <button
-            class="bg-transparent text-gray-400 hover:text-black transition-colors"
+            class="bg-transparent text-gray-400 hover:text-black dark:hover:text-white transition-colors"
             @click="$emit('onCreateDocument')"
             title="Create New Document"
           >
@@ -43,18 +49,23 @@ function handleSignOut() {
             :key="document.id_document"
             class="relative flex items-center group"
           >
-            <RouterLink :to="'/home/' + document.id_document" v-slot="{ isActive }" class="w-full">
+            <RouterLink
+              :to="'/studio/' + document.id_document"
+              v-slot="{ isActive }"
+              class="w-full"
+            >
               <div
                 :class="[
                   'relative flex items-center py-2.5 px-4 rounded-r-xl transition-all duration-300 ease-out',
                   isActive
-                    ? 'bg-gray-100/50 text-gray-900'
-                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50',
+                    ? 'bg-gray-100/50 text-gray-900 dark:bg-white/5 dark:text-white'
+                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-white/[0.02]',
                 ]"
               >
                 <div
                   :class="[
-                    'absolute left-0 w-1 bg-gray-900 transition-all duration-500 ease-in-out rounded-r-full',
+                    'absolute left-0 w-1 transition-all duration-500 ease-in-out rounded-r-full',
+                    'bg-gray-900 dark:bg-white',
                     isActive
                       ? 'h-3/5 opacity-100'
                       : 'h-0 opacity-0 group-hover:h-1/4 group-hover:opacity-20',
@@ -69,29 +80,30 @@ function handleSignOut() {
         </ul>
       </nav>
     </div>
-    <div class="p-4 border-t border-gray-100 bg-white/50 backdrop-blur-sm shrink-0">
+    <div
+      class="p-4 border-t shrink-0 transition-colors duration-300 border-gray-100 bg-white/50 backdrop-blur-sm dark:border-white/5 dark:bg-black/20"
+    >
       <div class="flex items-center justify-between gap-3 px-2 py-2 rounded-xl group">
         <div class="flex items-center gap-3 overflow-hidden">
           <div
-            class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center border border-indigo-100 shrink-0"
+            class="w-9 h-9 rounded-full flex items-center justify-center border shrink-0 bg-indigo-50 border-indigo-100 dark:bg-indigo-500/10 dark:border-indigo-500/20"
           >
-            <span class="font-bold text-indigo-400 uppercase">
+            <span class="font-bold text-indigo-400 dark:text-indigo-300 uppercase">
               {{ fullName?.charAt(0) || "?" }}
             </span>
           </div>
-
           <div class="flex flex-col overflow-hidden">
-            <span class="text-sm font-bold text-gray-700 truncate">
+            <span class="text-sm font-bold truncate text-gray-700 dark:text-gray-200">
               {{ fullName || "Loading..." }}
             </span>
-            <span class="text-xs text-gray-400 tracking-tighter truncate">
+            <span class="text-xs tracking-tighter truncate text-gray-400 dark:text-gray-500">
               {{ profile?.email }}
             </span>
           </div>
         </div>
         <button
           @click="handleSignOut"
-          class="opacity-0 group-hover:opacity-100 p-1.5 hover:text-red-500 text-gray-400 transition-all"
+          class="opacity-0 group-hover:opacity-100 p-1.5 transition-all text-gray-400 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400"
           title="Sign Out"
         >
           <svg

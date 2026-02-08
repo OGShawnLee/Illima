@@ -22,26 +22,33 @@ const props = defineProps<{
   content: string | undefined;
 }>();
 const emit = defineEmits(["onUpdate"]);
+
 const editor = useEditor({
   content: props.content,
   extensions: [
     TipTap.Bold,
     TipTap.BubbleMenuExtension,
     TipTap.BulletList.configure({
-      HTMLAttributes: { class: "list-disc mx-4" },
+      HTMLAttributes: { class: "list-disc mx-4 dark:text-gray-300" },
     }),
     TipTap.Blockquote.extend({
       content: "(paragraph)+",
     }).configure({
       HTMLAttributes: {
         class:
-          "mb-4 px-8 py-4 bg-[#FAFAFA] border border-l-4 border-l-black border-gray-100 leading-loose [&>p:last-child]:mb-0",
+          "mb-4 px-8 py-4 leading-loose transition-colors border-l-4 " +
+          "bg-[#FAFAFA] border-gray-100 border-l-black " + // Light mode
+          "dark:bg-white/5 dark:border-white/10 dark:border-l-white dark:text-gray-300 " + // Dark mode
+          "[&>p:last-child]:mb-0",
       },
     }),
     TipTap.Document.extend({ content: "block+" }),
     TipTap.Heading.extend({ marks: "" }).configure({
       levels: [2],
-      HTMLAttributes: { class: "text-2xl font-medium tracking-tight mt-8 mb-4" },
+      HTMLAttributes: {
+        class:
+          "text-2xl font-medium tracking-tight mt-8 mb-4 text-gray-900 dark:text-white transition-colors",
+      },
     }),
     TipTap.History,
     TipTap.Italic,
@@ -49,36 +56,30 @@ const editor = useEditor({
       HTMLAttributes: { class: "[&>p]:px-0 [&>ol]:mx-4 [&>ul]:mx-4" },
     }),
     TipTap.OrderedList.configure({
-      HTMLAttributes: { class: "list-decimal mx-4" },
+      HTMLAttributes: { class: "list-decimal mx-4 dark:text-gray-300" },
     }),
     TipTap.Paragraph.configure({
-      HTMLAttributes: { class: "mb-4 leading-relaxed text-gray-700" },
+      HTMLAttributes: {
+        class: "mb-4 leading-relaxed transition-colors text-gray-700 dark:text-gray-300",
+      },
     }),
     TipTap.Placeholder.configure({
       showOnlyCurrent: false,
-      placeholder(context) {
-        if (context.node.type.name === "paragraph") {
-          return "What do you have in mind?";
-        }
-
-        if (context.node.type.name === "heading") {
-          return "What is the name of this section?";
-        }
-
+      placeholder: (context) => {
+        if (context.node.type.name === "paragraph") return "What do you have in mind?";
+        if (context.node.type.name === "heading") return "What is the name of this section?";
         return "What do you have in mind?";
       },
     }),
     TipTap.Strike,
     TipTap.Text,
-    TipTap.TextAlign.configure({
-      types: ["paragraph"],
-    }),
+    TipTap.TextAlign.configure({ types: ["paragraph"] }),
     TipTap.Underline,
   ],
   editorProps: {
     attributes: {
       id: "tip-tap-editor",
-      class: "prose prose-lg max-w-none focus:outline-none min-h-[500px]",
+      class: "prose prose-lg max-w-none focus:outline-none min-h-[500px] dark:prose-invert",
     },
   },
   onUpdate: ({ editor }) => {
@@ -93,7 +94,7 @@ const editor = useEditor({
       v-if="editor"
       :editor="editor"
       :tippy-options="{ duration: 150 }"
-      class="flex items-center overflow-hidden rounded-lg shadow-2xl bg-gray-900 border border-gray-800 p-1 gap-0.5"
+      class="flex items-center overflow-hidden rounded-lg shadow-xl p-1 gap-0.5 border transition-all duration-300 bg-white border-gray-200 shadow-gray-200/50 dark:bg-[#1A1A1A] dark:border-white/10 dark:shadow-none"
     >
       <GUIEditorButton
         title="Bold"
@@ -123,7 +124,7 @@ const editor = useEditor({
       >
         <Strikethrough />
       </GUIEditorButton>
-      <div class="w-[1px] h-4 bg-gray-800 mx-1"></div>
+      <div class="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
       <GUIEditorButton
         title="Align Left"
         :is-active="editor?.isActive({ textAlign: 'left' })"
@@ -145,14 +146,7 @@ const editor = useEditor({
       >
         <AlignRight />
       </GUIEditorButton>
-      <GUIEditorButton
-        title="Justify"
-        :is-active="editor?.isActive({ textAlign: 'justify' })"
-        @click="editor?.chain().focus().setTextAlign('justify').run()"
-      >
-        <AlignJustify />
-      </GUIEditorButton>
-      <div class="w-[1px] h-4 bg-gray-800 mx-1"></div>
+      <div class="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
       <GUIEditorButton
         title="Heading"
         :is-active="editor?.isActive('heading', { level: 2 })"
@@ -166,13 +160,6 @@ const editor = useEditor({
         @click="editor?.chain().focus().toggleBulletList().run()"
       >
         <List />
-      </GUIEditorButton>
-      <GUIEditorButton
-        title="Ordered List"
-        :is-active="editor?.isActive('orderedList')"
-        @click="editor?.chain().focus().toggleOrderedList().run()"
-      >
-        <ListOrdered />
       </GUIEditorButton>
       <GUIEditorButton
         title="Quote"
@@ -189,6 +176,16 @@ const editor = useEditor({
 <style>
 #tip-tap-editor h2.is-empty:before,
 p.is-empty:before {
-  --uno: "float-left h-0 text-gray-400 pointer-events-none content-[attr(data-placeholder)]";
+  float: left;
+  height: 0;
+  pointer-events: none;
+  content: attr(data-placeholder);
+  --uno: "text-gray-300 dark:text-gray-700 transition-colors";
+}
+
+/* Fix for the prose-invert default colors */
+.dark #tip-tap-editor {
+  --tw-prose-body: theme("colors.gray.300");
+  --tw-prose-headings: theme("colors.white");
 }
 </style>

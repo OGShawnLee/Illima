@@ -20,22 +20,17 @@ async function handleSignIn() {
     const response = await fetch("http://localhost:3000/auth/sign-in", {
       method: "POST",
       body: JSON.stringify(AccountSchema.getValidSignInShape(form)),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
     const token = await response.text();
 
     if (token) {
       localStorage.setItem(AUTH_TOKEN_NAME, token);
-      router.push("/home");
+      router.push("/studio");
     }
   });
 
-  if (error) {
-    console.error(error);
-  }
-
+  if (error) console.error(error);
   isLoading.value = false;
 }
 </script>
@@ -48,7 +43,7 @@ async function handleSignIn() {
         label="Username"
         id="display-name"
         v-model="form.display_name"
-        placeholder="IlliamLee"
+        placeholder="illiamLee"
         required
       />
       <GUIInput type="password" label="Password" id="password" v-model="form.password" required />
@@ -59,15 +54,19 @@ async function handleSignIn() {
     <div class="mt-8">
       <div class="relative">
         <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-100"></div>
+          <div class="w-full border-t border-gray-100 dark:border-white/5"></div>
         </div>
-        <div class="relative flex justify-center text-xs uppercase tracking-widest">
-          <span class="px-4 bg-white text-gray-300 font-light">Or continue with</span>
+        <div class="relative flex justify-center text-[10px] uppercase tracking-[0.2em]">
+          <span
+            class="px-4 bg-white dark:bg-[#111111] text-gray-400 dark:text-gray-600 font-bold transition-colors"
+          >
+            Or continue with
+          </span>
         </div>
       </div>
       <div class="mt-6">
         <button
-          class="w-full flex justify-center items-center py-3 px-4 border border-gray-100 rounded-xl bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+          class="w-full flex justify-center items-center py-3 px-4 border rounded-xl text-sm font-medium transition-all bg-white border-gray-100 text-gray-500 hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10"
         >
           <img
             src="https://www.svgrepo.com/show/355037/google.svg"
@@ -79,13 +78,15 @@ async function handleSignIn() {
       </div>
     </div>
     <template #footer>
-      <p class="mt-8 text-center text-sm text-gray-400 font-light">
+      <p
+        class="mt-8 text-center text-xs uppercase tracking-[0.15em] text-gray-400 dark:text-gray-600 font-medium"
+      >
         Don't have an account?
         <RouterLink
           to="/auth/sign-up"
-          class="font-medium text-gray-600 hover:text-black underline underline-offset-4 transition-all"
+          class="ml-1 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white underline underline-offset-4 decoration-gray-200 dark:decoration-gray-800 transition-all"
         >
-          Sign up here!
+          Sign up here
         </RouterLink>
       </p>
     </template>
