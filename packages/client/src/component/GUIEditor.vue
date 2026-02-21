@@ -148,6 +148,13 @@ const editor = useEditor({
       >
         <AlignRight />
       </GUIEditorButton>
+      <GUIEditorButton
+        title="Justify"
+        :is-active="editor?.isActive({ textAlign: 'justify' })"
+        @click="editor?.chain().focus().setTextAlign('justify').run()"
+      >
+        <AlignJustify />
+      </GUIEditorButton>
       <div class="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
       <GUIEditorButton
         title="Heading"
