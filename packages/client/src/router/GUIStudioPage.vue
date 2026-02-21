@@ -2,32 +2,20 @@
 import GUIHomeSidebar from "@/component/GUIHomeSidebar.vue";
 import GUIEditor from "@/component/GUIEditor.vue";
 import router from "@/router";
-import { API_BASE_URL, AUTH_TOKEN_NAME } from "@/env";
+import api from "@/api";
+import { AUTH_TOKEN_NAME } from "@/env";
 import { onMounted, ref, watch } from "vue";
-import { DocumentSchema, isNullish, ProfileSchema, useAwait } from "shared";
+import { DocumentSchema, isNullish, ProfileSchema } from "shared";
 import { Moon, Share, Sun, Trash2 } from "lucide-vue-next";
 import { useRoute } from "vue-router";
 import { useDark, useDebounceFn, useToggle } from "@vueuse/core";
 
 function handleFetchProfile(auth: string) {
-  return useAwait(async () => {
-    const response = await fetch(API_BASE_URL + "/api/profile", {
-      method: "GET",
-      headers: { Authorization: "Bearer " + auth },
-    });
-    return ProfileSchema.getValidProfile(await response.json());
-  });
+  return api.api.profile.get({ headers: { authorization: auth } });
 }
 
 function handleFetchDocumentCollection(auth: string) {
-  return useAwait(async () => {
-    const response = await fetch(API_BASE_URL + "/api/document", {
-      method: "GET",
-      headers: { Authorization: "Bearer " + auth },
-    });
-    const data = await response.json();
-    return data as DocumentSchema.DocumentShape[];
-  });
+  return api.api.document.get({ headers: { authorization: auth } });
 }
 
 const profile = ref<ProfileSchema.ProfileShape>();
@@ -83,60 +71,41 @@ async function handleCreateDocument() {
     return;
   }
 
-  try {
-    const response = await fetch(API_BASE_URL + "/api/document", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + auth,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id_author: profile.value.id_author,
-        title: "New Document",
-        content: "",
-      }),
-    });
+  const { error } = await api.api.document.post(
+    { id_author: profile.value.id_author, title: "New Document", content: "" },
+    { headers: { authorization: auth } },
+  );
 
-    if (response.ok && response.status === 201) {
-      const { data } = await handleFetchDocumentCollection(auth);
-
-      if (data) documentCollection.value = data;
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-async function handleDeleteDocument() {
-  const document = currentDocument.value;
-
-  if (isNullish(document)) {
-    return console.error("Invalid Document");
-  }
-
-  const auth = localStorage.getItem(AUTH_TOKEN_NAME);
-
-  if (auth === null) {
-    router.push("/auth/sign-in");
+  if (error) {
+    console.error("Failed to create document", error);
     return;
   }
 
-  try {
-    const response = await fetch(API_BASE_URL + "/api/document/" + document.id_document, {
-      method: "DELETE",
-      headers: { Authorization: "Bearer " + auth },
-    });
+  const { data } = await handleFetchDocumentCollection(auth);
 
-    if (response.status === 204) {
-      router.push("/home");
-      documentCollection.value = documentCollection.value.filter(
-        (doc) => doc.id_document != document.id_document,
-      );
-      currentDocument.value = undefined;
-    }
-  } catch (e) {
-    console.error(e);
+  if (data) documentCollection.value = data;
+}
+
+async function handleDeleteDocument() {
+  const auth = localStorage.getItem(AUTH_TOKEN_NAME);
+  const document = currentDocument.value;
+
+  if (isNullish(auth) || isNullish(document)) return;
+
+  const { error } = await api.api
+    .document({ id: document.id_document })
+    .delete(undefined, { headers: { authorization: auth } });
+
+  if (error) {
+    console.error("Failed to delete document", error);
+    return;
   }
+
+  router.push("/studio");
+  documentCollection.value = documentCollection.value.filter(
+    (doc) => doc.id_document != document.id_document,
+  );
+  currentDocument.value = undefined;
 }
 
 async function handleFetchDocument(id: unknown) {
@@ -151,60 +120,49 @@ async function handleFetchDocument(id: unknown) {
     return;
   }
 
-  try {
-    const response = await fetch(API_BASE_URL + "/api/document/" + id, {
-      method: "GET",
-      headers: { Authorization: "Bearer " + auth },
-    });
-    const data = DocumentSchema.getValidDocument(await response.json());
+  const { data, error } = await api.api.document({ id }).get({ headers: { authorization: auth } });
 
+  if (data) {
     currentDocument.value = data;
     content.value = currentDocument.value.content;
-  } catch (e) {
-    console.error(e);
+  } else {
+    console.log("Failed to fetch document", error);
   }
 }
 
 async function updateDocumentTitle(title: string) {
   const auth = localStorage.getItem(AUTH_TOKEN_NAME);
-  const idDocument = currentDocument.value?.id_document;
+  const doc = currentDocument.value;
 
-  if (isNullish(auth) || isNullish(idDocument)) return;
+  if (isNullish(auth) || isNullish(doc)) return;
 
-  const docInList = documentCollection.value.find((d) => d.id_document === idDocument);
+  const docInList = documentCollection.value.find((d) => d.id_document === doc.id_document);
   if (docInList) docInList.title = title;
 
-  try {
-    await fetch(API_BASE_URL + "/api/document/" + idDocument, {
-      method: "PATCH",
-      headers: {
-        Authorization: "Bearer " + auth,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...currentDocument.value, title }),
-    });
-  } catch (e) {
-    console.error("Failed to update title:", e);
+  const { error } = await api.api
+    .document({ id: doc.id_document })
+    .patch({ ...doc, title }, { headers: { authorization: auth } });
+
+  if (error) {
+    console.error("Failed to update title", error);
   }
 }
 
 async function updateDocumentContent(content: string) {
   const auth = localStorage.getItem(AUTH_TOKEN_NAME);
-  const idDocument = currentDocument.value?.id_document;
+  const doc = currentDocument.value;
 
-  if (isNullish(auth) || isNullish(idDocument)) return;
+  if (isNullish(auth) || isNullish(doc)) return;
 
-  try {
-    await fetch(API_BASE_URL + "/api/document/" + idDocument, {
-      method: "PATCH",
-      headers: {
-        Authorization: "Bearer " + auth,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...currentDocument.value, content }),
-    });
-  } catch (e) {
-    console.error("Failed to update content:", e);
+  const { error } = await api.api.document({ id: doc.id_document }).patch(
+    { ...doc, content },
+    {
+      headers: { authorization: auth },
+    },
+  );
+
+  if (error) {
+    console.error("Failed to update content", e);
   }
 }
 

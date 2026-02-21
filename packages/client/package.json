@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@elysiajs/eden": "^1.4.6",
     "@tiptap/extension-blockquote": "^3.19.0",
     "@tiptap/extension-bold": "^3.19.0",
     "@tiptap/extension-bubble-menu": "^3.19.0",

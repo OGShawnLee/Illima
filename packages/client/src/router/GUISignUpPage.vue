@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import api from "@/api";
 import GUIAuthLayout from "@/component/GUIAuthLayout.vue";
 import GUIButton from "@/component/GUIButton.vue";
 import GUIInput from "@/component/GUIInput.vue";
 import router from "@/router";
-import { AccountSchema, useAwait } from "shared";
+import { AccountSchema } from "shared";
 import { ref, reactive } from "vue";
 
 const isLoading = ref(false);
@@ -18,19 +19,18 @@ const form = reactive<AccountSchema.SignUpShape>({
 async function handleSignUp() {
   isLoading.value = true;
 
-  const { error } = await useAwait(async () => {
-    const response = await fetch("http://localhost:3000/auth/sign-up", {
-      method: "POST",
-      body: JSON.stringify(AccountSchema.getValidSignUpShape(form)),
-      headers: { "Content-Type": "application/json" },
-    });
+  const { data, error } = await api.auth["sign-up"].post(form);
 
-    if (response.ok && response.status === 201) {
-      router.push("/auth/sign-in");
+  if (data) {
+    router.push("/auth/sign-in");
+  } else if (error) {
+    if (error.status === 500) {
+      alert("An unexpected error has happened!");
+    } else {
+      alert("Invalid Data");
     }
-  });
+  }
 
-  if (error) console.error(error);
   isLoading.value = false;
 }
 </script>

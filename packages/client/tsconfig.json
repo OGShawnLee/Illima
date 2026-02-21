@@ -1,5 +1,10 @@
 {
   "files": [],
+  "compilerOptions": {
+    "paths": {
+      "@server": ["../server/index.ts"]
+    }
+  },
   "references": [
     {
       "path": "./tsconfig.node.json"

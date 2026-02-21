@@ -6,6 +6,7 @@ import router from "@/router";
 import { AccountSchema, useAwait } from "shared";
 import { ref, reactive } from "vue";
 import { AUTH_TOKEN_NAME } from "@/env";
+import api from "@/api";
 
 const isLoading = ref(false);
 const form = reactive({
@@ -16,21 +17,27 @@ const form = reactive({
 async function handleSignIn() {
   isLoading.value = true;
 
-  const { error } = await useAwait(async () => {
-    const response = await fetch("http://localhost:3000/auth/sign-in", {
-      method: "POST",
-      body: JSON.stringify(AccountSchema.getValidSignInShape(form)),
-      headers: { "Content-Type": "application/json" },
-    });
-    const token = await response.text();
+  const { data, error } = await api.auth["sign-in"].post(form);
 
-    if (token) {
-      localStorage.setItem(AUTH_TOKEN_NAME, token);
-      router.push("/studio");
+  if (data) {
+    localStorage.setItem(AUTH_TOKEN_NAME, data);
+    router.push("/studio");
+  } else if (error) {
+    switch (error.status) {
+      case 500:
+        alert("An unexpected error has happened!");
+        break;
+      case 422:
+        alert("Invalid Data");
+        break;
+      case 400:
+        alert("Invalid Credentials");
+        break;
+      default:
+        alert("An unexpected error has happened!" + error);
     }
-  });
+  }
 
-  if (error) console.error(error);
   isLoading.value = false;
 }
 </script>

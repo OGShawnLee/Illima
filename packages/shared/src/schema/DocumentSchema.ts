@@ -6,7 +6,7 @@ export namespace DocumentSchema {
   export const MAX_TITLE_LENGTH = 128;
   export const MAX_CONTENT_LENGTH = 65535;
 
-  const INSERT_DOCUMENT_SCHEMA = v.object({
+  export const INSERT_DOCUMENT_SCHEMA = v.object({
     id_author: getForeignKeySchema("Author ID"),
     title: v.pipe(
       v.string("Document Title must be a string"),
@@ -20,7 +20,7 @@ export namespace DocumentSchema {
       v.trim(),
     ),
   });
-  const DOCUMENT_SCHEMA = v.object({
+  export const DOCUMENT_SCHEMA = v.object({
     ...INSERT_DOCUMENT_SCHEMA.entries,
     id_document: v.number(),
     created_at: getDateOrStringSchema("Created At"),

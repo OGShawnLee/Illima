@@ -36,14 +36,14 @@ export namespace AccountSchema {
     password: SIMPLE_PASSWORD_SCHEMA,
     created_at: v.date(),
   });
-  const SIGN_UP_SCHEMA = v.object({
+  export const SIGN_UP_SCHEMA = v.object({
     name: AuthorSchema.AUTHOR_SCHEMA.entries.name,
     last_name: AuthorSchema.AUTHOR_SCHEMA.entries.last_name,
     display_name: AuthorSchema.AUTHOR_SCHEMA.entries.display_name,
     email: ACCOUNT_SCHEMA.entries.email,
     password: STRONG_PASSWORD_SCHEMA,
   });
-  const SIGN_IN_SCHEMA = v.object({
+  export const SIGN_IN_SCHEMA = v.object({
     display_name: AuthorSchema.AUTHOR_SCHEMA.entries.display_name,
     password: STRONG_PASSWORD_SCHEMA,
   });
