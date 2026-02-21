@@ -26,7 +26,9 @@ const emit = defineEmits(["onUpdate"]);
 const editor = useEditor({
   content: props.content,
   extensions: [
-    TipTap.Bold,
+    TipTap.Bold.configure({
+      HTMLAttributes: { class: "text-black dark:text-white" },
+    }),
     TipTap.BubbleMenuExtension,
     TipTap.BulletList.configure({
       HTMLAttributes: { class: "list-disc mx-4 dark:text-gray-300" },
